@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+firebase_key.json
+.git
+.gitignore
+*.log

@@ -1,0 +1,124 @@
+{
+  "title": "🧭 Birju.AI – New User Walkthrough Guide",
+  "steps": [
+    {
+      "step": 1,
+      "title": "Welcome to Birju.AI",
+      "description": "When a new user visits Birju.AI, they land on a clean and minimal home dashboard. It greets them as ‘Birju’s Guest’ and offers to start their first counselling session.",
+      "actions": ["Click on ‘Start Counsel Now!!’ to begin your journey."],
+      "screenshot": "Birju_dashboard.png"
+    },
+    {
+      "step": 2,
+      "title": "Sign In or Sign Up",
+      "description": "Before using Birju.AI, the user needs to log in or sign up. Once logged in, their name will appear at the bottom-left corner of the sidebar.",
+      "details": ["⭐ Reward points", "🔥 Streak count"]
+    },
+    {
+      "step": 3,
+      "title": "Exploring the Dashboard",
+      "description": "After login, the main sidebar becomes your control panel. It contains two key options for guidance and learning.",
+      "features": [
+        "💬 New Counsel – for personalized career guidance",
+        "🗺️ New Roadmap – for skill-building journeys"
+      ],
+      "extra": ["❓ Help"],
+      "screenshot": "sidebarBirju.png"
+    },
+    {
+      "step": 4,
+      "title": "Generating a New Counsel",
+      "description": "Click ‘New Counsel’ to get personalized advice. A popup form appears asking for a few details about you.",
+      "form_fields": [
+        "🎓 Education (e.g., BBA)",
+        "💼 Field (e.g., Commerce)",
+        "🧠 Intent (e.g., ‘learn about jobs available’)",
+        "🧩 Skills (optional)"
+      ],
+      "action": "After filling this, click Generate Counsel.",
+      "screenshot": "Counsel.png"
+    },
+    {
+      "step": 5,
+      "title": "Viewing Your Counsel Report",
+      "description": "Once generated, a Counsel Card appears in your sidebar list. You can create multiple counsels, each saved for future reference.",
+      "contents": {
+        "includes": [
+          "📘 Introduction",
+          "💼 2–3 Job Roles (based on your education and intent)"
+        ],
+        "job_role_details": [
+          "Overview",
+          "Key Responsibilities",
+          "Career Path",
+          "Expected Salary",
+          "Skill Gap",
+          "Recommended Learning Resources"
+        ],
+        "final_note": "💬 Final Recommendation & Situational Overview"
+      },
+      "screenshot": "stages.png"
+    },
+    {
+      "step": 6,
+      "title": "Creating a New Roadmap",
+      "description": "Switch to the Roadmap tab using the top toggle. Fill out the form to generate your personalized learning roadmap.",
+      "form_fields": [
+        "🎯 Role (e.g., Frontend Developer)",
+        "💪 Current Skills",
+        "📈 Level (Beginner / Intermediate / Advanced)",
+        "⏳ Duration (how long you want the plan for)"
+      ],
+      "roadmap_features": [
+        "Each roadmap has multiple stages with estimated duration.",
+        "Each stage covers skills, projects, or concepts to complete."
+      ],
+      "screenshot": "Toggle.png"
+    },
+    {
+      "step": 7,
+      "title": "Tracking Your Progress",
+      "description": "Each roadmap includes a progress bar at the top that fills as you complete stages, giving a quick view of your journey.",
+      "screenshot": "progressBar.png"
+    },
+    {
+      "step": 8,
+      "title": "Taking Quizzes",
+      "description": "At the bottom of each roadmap is the Quiz section with stage-wise quizzes (S1, S2, S3, etc.).",
+      "quiz_flow": [
+        "Click ‘Generate New Quiz’ to create an AI-generated test.",
+        "Stage button turns yellow when quiz is generated.",
+        "Turns green (✅) if passed, red (❌) if failed.",
+        "Passing a quiz unlocks the next stage."
+      ],
+      "screenshot": "Quizs.png"
+    },
+    {
+      "step": 9,
+      "title": "Rewards & Streak System",
+      "description": "To make learning exciting and consistent, Birju.AI uses a reward and streak system.",
+      "rules": [
+        "🏅 Passing a quiz adds +30 points.",
+        "💯 Completing an entire roadmap gives +100 points.",
+        "🔥 Each consecutive quiz passed increases your streak.",
+        "❌ Failing a quiz resets your streak."
+      ],
+      "note": "You can view your points and streak anytime in the sidebar.",
+      "screenshot": "loggedin.png"
+    },
+    {
+      "step": 10,
+      "title": "Managing Counsels & Roadmaps",
+      "description": "You can create multiple Counsels or Roadmaps. All are saved and neatly listed in the sidebar for quick access.",
+      "features": [
+        "Old quizzes (only the last 4 per stage) are automatically managed.",
+        "Easily switch between Counsels and Roadmaps from the sidebar."
+      ]
+    },
+    {
+      "step": 11,
+      "title": "🎉 That’s It! You’re All Set",
+      "description": "Birju.AI acts like your personal AI career mentor — guiding you with clarity, structured roadmaps, and progress tracking, while keeping you motivated through streaks and rewards."
+    }
+  ]
+}

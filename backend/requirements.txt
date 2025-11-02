@@ -1,0 +1,17 @@
+# v2 dependencies
+fastapi
+gunicorn
+uvicorn
+langchain
+langchain-groq
+langchain_community
+langchain_core
+langgraph
+langgraph-cli[inmem]
+langchain-google-genai
+python-dotenv
+bcrypt
+pydantic[email]
+PyJWT
+google-cloud-firestore
+google-generativeai
