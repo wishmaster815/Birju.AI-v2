@@ -117,7 +117,8 @@ export default function MainContent({
 
 
     if (showHelpGuide) {
-        return (
+    return (
+        <div className="w-full h-full overflow-y-auto">
             <div className="py-6 px-4 w-full md:p-10 flex flex-col gap-6 transition-all duration-300">
                 <div className="flex items-center gap-3">
                     <HelpCircle size={24} className="text-[var(--color-primary-blue)]" />
@@ -128,8 +129,9 @@ export default function MainContent({
                 
                 <HelpGuide />
             </div>
-        );
-    }
+        </div>
+    );
+}
 
 
 

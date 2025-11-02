@@ -17,8 +17,8 @@ import useUserDetails from "./components/userDetails";
 
 export default function CounselingApp() {
   // Change to handle IDs instead of indices
-  const [activeCounsel, setActiveCounsel] = useState<string | number>(0);
-  const [activeRoadmap, setActiveRoadmap] = useState<string | number>(0);
+  const [activeCounsel, setActiveCounsel] = useState<string | number>(-1);
+  const [activeRoadmap, setActiveRoadmap] = useState<string | number>(-1);
   const [activeIcon, setActiveIcon] = useState("compass");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -32,7 +32,7 @@ export default function CounselingApp() {
   const [isRoadmapModalOpen, setIsRoadmapModalOpen] = useState(false);
   const [isMainContentLoading, setIsMainContentLoading] = useState(true);
   const [sidebarDisabled, setSidebarDisabled] = useState(false);
-  const [showHelpGuide,setshowHelpGuide] = useState(false);
+  const [showHelpGuide, setshowHelpGuide] = useState(false);
 
   // ✅ use your custom hooks
   const { counsels, hasCounselling, fetchUserCounselling } = useCounsel();
@@ -74,43 +74,43 @@ export default function CounselingApp() {
 
   // ✅ Set latest item as active when data loads or new item is generated
   useEffect(() => {
-    if (counsels.length > 0 && activeIcon === "compass") {
+    if (counsels.length > 0 && activeIcon === "compass" && !showHelpGuide) {
       // Set the latest counsel as active (first item after reverse)
       const sortedCounsels = [...counsels].reverse();
       const latestCounsel = sortedCounsels[0];
-      if (latestCounsel && latestCounsel.counsel_id) {
+      if (latestCounsel && latestCounsel.counsel_id && activeCounsel === -1) {
         setActiveCounsel(latestCounsel.counsel_id);
       }
     }
-  }, [counsels, activeIcon]);
+  }, [counsels, activeIcon, showHelpGuide, activeCounsel]);
 
   useEffect(() => {
-    if (roadmaps.length > 0 && activeIcon === "map") {
+    if (roadmaps.length > 0 && activeIcon === "map" && !showHelpGuide) {
       // Set the latest roadmap as active (first item after reverse)
       const sortedRoadmaps = [...roadmaps].reverse();
       const latestRoadmap = sortedRoadmaps[0];
-      if (latestRoadmap && (latestRoadmap.roadmap_id || latestRoadmap.id)) {
+      if (latestRoadmap && (latestRoadmap.roadmap_id || latestRoadmap.id) && activeRoadmap === -1) {
         setActiveRoadmap(latestRoadmap.roadmap_id || latestRoadmap.id);
       }
     }
-  }, [roadmaps, activeIcon]);
+  }, [roadmaps, activeIcon, showHelpGuide, activeRoadmap]);
 
   // ✅ Also set latest item when switching between compass and map
   useEffect(() => {
-    if (activeIcon === "compass" && counsels.length > 0) {
+    if (activeIcon === "compass" && counsels.length > 0 && !showHelpGuide) {
       const sortedCounsels = [...counsels].reverse();
       const latestCounsel = sortedCounsels[0];
-      if (latestCounsel && latestCounsel.counsel_id) {
+      if (latestCounsel && latestCounsel.counsel_id && activeCounsel === -1) {
         setActiveCounsel(latestCounsel.counsel_id);
       }
-    } else if (activeIcon === "map" && roadmaps.length > 0) {
+    } else if (activeIcon === "map" && roadmaps.length > 0 && !showHelpGuide) {
       const sortedRoadmaps = [...roadmaps].reverse();
       const latestRoadmap = sortedRoadmaps[0];
-      if (latestRoadmap && (latestRoadmap.roadmap_id || latestRoadmap.id)) {
+      if (latestRoadmap && (latestRoadmap.roadmap_id || latestRoadmap.id) && activeRoadmap === -1) {
         setActiveRoadmap(latestRoadmap.roadmap_id || latestRoadmap.id);
       }
     }
-  }, [activeIcon, counsels, roadmaps]);
+  }, [activeIcon, counsels, roadmaps, showHelpGuide, activeCounsel, activeRoadmap]);
 
   // Fetch data and handle loading state
   useEffect(() => {
@@ -130,7 +130,124 @@ export default function CounselingApp() {
     }
   }, [fetchUserRoadmap, fetchUserCounselling, token, user]);
 
-  
+  // ✅ Render main content based on state
+  const renderMainContent = () => {
+    // ✅ Help Guide takes highest priority
+    if (showHelpGuide) {
+      return (
+        <div className="w-full">
+          <MainContent
+            activeIcon={activeIcon}
+            activeCounsel={activeCounsel}
+            activeRoadmap={activeRoadmap}
+            counsels={counsels}
+            roadmaps={roadmaps}
+            setSidebarDisabled={setSidebarDisabled}
+            showHelpGuide={showHelpGuide}
+          />
+        </div>
+      );
+    }
+
+    // ✅ If user is creating new OR has no data
+    if (isCreatingNew ||
+      (activeIcon === "compass" && counsels.length === 0) ||
+      (activeIcon === "map" && roadmaps.length === 0)) {
+      return (
+        <div className="flex flex-col items-center justify-center text-center">
+          <div className="mb-8">
+            <Image
+              src="/birju-logo.png"
+              alt="BIRJU BYTES"
+              width={80}
+              height={80}
+              className="object-contain md:w-[100px] md:h-[100px]"
+            />
+          </div>
+
+          <div className="mb-4">
+            {userloading ? (
+              // Username skeleton
+              <div className="h-12 bg-gray-200 rounded-lg w-48 animate-pulse mb-4"></div>
+            ) : (
+              <h1
+                className="text-3xl md:text-5xl font-bold mb-4"
+                style={{ color: "var(--color-dark-text)" }}
+              >
+                Hi, {user?.username || "Birju's Guest"}!
+              </h1>
+            )}
+          </div>
+
+          {activeIcon === "compass" ? (
+            <div>
+              <p
+                className="text-base md:text-xl mb-12"
+                style={{ color: "var(--color-gray-text)" }}
+              >
+                Do you need a counsel today?
+              </p>
+
+              <button
+                disabled={userloading}
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    setIsOpen(true); // show auth modal
+                  } else {
+                    setIsCounselModalOpen(true); // open counsel modal
+                  }
+                }}
+                className={`text-white px-6 md:px-8 py-3 text-sm md:text-base rounded-lg font-semibold transition hover:opacity-90 shadow-md ${userloading ? "opacity-60 pointer-events-none" : ""}`}
+                style={{ backgroundColor: "var(--color-primary-blue)" }}
+              >
+                Start Counsel Now!!
+              </button>
+            </div>
+          ) : (
+            <div>
+              <p
+                className="text-base md:text-xl mb-12"
+                style={{ color: "var(--color-gray-text)" }}
+              >
+                Wanna achieve something new?
+              </p>
+
+              <button
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    setIsOpen(true);
+                  } else {
+                    setIsRoadmapModalOpen(true); // ✅ Open roadmap modal
+                  }
+                }}
+                className={`text-white px-6 md:px-8 py-3 text-sm md:text-base rounded-lg font-semibold transition hover:opacity-90 shadow-md ${userloading ? "opacity-60 pointer-events-none" : ""}`}
+                style={{ backgroundColor: "var(--color-primary-blue)" }}
+              >
+                Generate Roadmap Now!!
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ✅ Active Content Area (when a counsel/roadmap is selected)
+    if (isMainContentLoading) {
+      return <MainContentSkeleton />;
+    }
+
+    return (
+      <MainContent
+        activeIcon={activeIcon}
+        activeCounsel={activeCounsel}
+        activeRoadmap={activeRoadmap}
+        counsels={counsels}
+        roadmaps={roadmaps}
+        setSidebarDisabled={setSidebarDisabled}
+        showHelpGuide={showHelpGuide}
+      />
+    );
+  };
 
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--color-light-bg)]">
@@ -150,8 +267,8 @@ export default function CounselingApp() {
         setActiveRoadmap={setActiveRoadmap}
         setIsCreatingNew={setIsCreatingNew}
         sidebarDisabled={sidebarDisabled}
-        showHelpGuide = {showHelpGuide}
-        setshowHelpGuide = {setshowHelpGuide}
+        showHelpGuide={showHelpGuide}
+        setshowHelpGuide={setshowHelpGuide}
       />
 
       {/* Mobile Open Button */}
@@ -170,108 +287,17 @@ export default function CounselingApp() {
 
       {/* Main Content */}
       <div
-        className={`flex-1 main-scroll-container h-screen overflow-y-auto p-4 md:p-0 transition-all bg-[var(--color-light-bg)] flex flex-col text-center
-        ${isCreatingNew ||
-            (activeIcon === "compass" && counsels.length === 0) ||
-            (activeIcon === "map" && roadmaps.length === 0)
-            ? "items-center justify-center"
-            : "items-start justify-start"
-          }`}
-      >
-        {/* If user is creating new OR has no data */}
-        {(isCreatingNew ||
-          (activeIcon === "compass" && counsels.length === 0) ||
-          (activeIcon === "map" && roadmaps.length === 0)) ? (
-          <div className="flex flex-col items-center justify-center text-center">
-            <div className="mb-8">
-              <Image
-                src="/birju-logo.png"
-                alt="BIRJU BYTES"
-                width={80}
-                height={80}
-                className="object-contain md:w-[100px] md:h-[100px]"
-              />
-            </div>
-
-            <div className="mb-4">
-              {userloading ? (
-                // Username skeleton
-                <div className="h-12 bg-gray-200 rounded-lg w-48 animate-pulse mb-4"></div>
-              ) : (
-                <h1
-                  className="text-3xl md:text-5xl font-bold mb-4"
-                  style={{ color: "var(--color-dark-text)" }}
-                >
-                  Hi, {user?.username || "Birju's Guest"}!
-                </h1>
-              )}
-            </div>
-
-            {activeIcon === "compass" ? (
-              <div>
-                <p
-                  className="text-base md:text-xl mb-12"
-                  style={{ color: "var(--color-gray-text)" }}
-                >
-                  Do you need a counsel today?
-                </p>
-
-                <button
-                  disabled={userloading}
-                  onClick={() => {
-                    if (!isAuthenticated) {
-                      setIsOpen(true); // show auth modal
-                    } else {
-                      setIsCounselModalOpen(true); // open counsel modal
-                    }
-                  }}
-                  className={`text-white px-6 md:px-8 py-3 text-sm md:text-base rounded-lg font-semibold transition hover:opacity-90 shadow-md ${userloading ? "opacity-60 pointer-events-none" : ""}`}
-                  style={{ backgroundColor: "var(--color-primary-blue)" }}
-                >
-                  Start Counsel Now!!
-                </button>
-              </div>
-            ) : (
-              <div>
-                <p
-                  className="text-base md:text-xl mb-12"
-                  style={{ color: "var(--color-gray-text)" }}
-                >
-                  Wanna achieve something new?
-                </p>
-
-                <button
-                  onClick={() => {
-                    if (!isAuthenticated) {
-                      setIsOpen(true);
-                    } else {
-                      setIsRoadmapModalOpen(true); // ✅ Open roadmap modal
-                    }
-                  }}
-                  className={`text-white px-6 md:px-8 py-3 text-sm md:text-base rounded-lg font-semibold transition hover:opacity-90 shadow-md ${userloading ? "opacity-60 pointer-events-none" : ""}`}
-                  style={{ backgroundColor: "var(--color-primary-blue)" }}
-                >
-                  Generate Roadmap Now!!
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          // Active Content Area (when a counsel/roadmap is selected)
-          isMainContentLoading ? (
-            <MainContentSkeleton />
-          ) : (
-            <MainContent
-              activeIcon={activeIcon}
-              activeCounsel={activeCounsel}
-              activeRoadmap={activeRoadmap}
-              counsels={counsels}
-              roadmaps={roadmaps}
-              setSidebarDisabled={setSidebarDisabled}
-              showHelpGuide = {showHelpGuide}
-            />
-          )
-        )}
+  className={`flex-1 main-scroll-container h-screen overflow-y-auto p-4 md:p-0 transition-all bg-[var(--color-light-bg)] flex flex-col
+    ${showHelpGuide 
+      ? "items-start justify-start" // Help Guide should use normal layout
+      : isCreatingNew ||
+        (activeIcon === "compass" && counsels.length === 0) ||
+        (activeIcon === "map" && roadmaps.length === 0)
+        ? "items-center justify-center"
+        : "items-start justify-start"
+    }`}
+>
+        {renderMainContent()}
       </div>
 
       {/* Auth Modal */}
