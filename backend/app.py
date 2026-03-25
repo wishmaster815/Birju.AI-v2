@@ -32,10 +32,15 @@ app.include_router(quiz_router)
 app.include_router(counsel_router)
 
 
-@app.get("/")
-async def root():
-    return {"message": "BirjuRam AI backend running successfully!"}
+# @app.get("/")
+# async def root():
+#     return {"message": "BirjuRam AI backend running successfully 🚀"}
+
+
+@app.api_route("/", methods=["GET", "HEAD"], tags=["Health"])
+def root():
+    return {"message": "Backend running successfully"}
 
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8080)
+    uvicorn.run("app:app", host="127.0.0.1", port=8080)
